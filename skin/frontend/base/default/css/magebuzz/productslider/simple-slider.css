@@ -1,0 +1,15 @@
+/********Css For Simple Slider ************/
+.list-products{}
+.list-products #list-items{}
+#list-items .item{}
+#list-items .product-info{margin-left:180px;}
+#list-items .product-name{}
+#list-items .product-name a{font-size:14px; font-weight:bold; color:#2f2f2f; text-decoration:none;}
+#list-items .product-image{
+	float:left;
+	display: block;
+	padding: 1px;
+	text-align: left;
+}
+.list-products .bx-prev{position:absolute; background:url(images/btn_prev.png) top left no-repeat;  height: 32px; width: 32px;top:50%;left: -30px;right: auto;float:left; text-align:left; text-indent:-999em; }
+.list-products .bx-next{position:absolute; background:url(images/btn_next.png) top right no-repeat; height: 32px; width: 32px;top:50%; right:-30px;float:left; text-align:left; text-indent:-999em; }

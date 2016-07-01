@@ -1,0 +1,94 @@
+<?php $productCollection = $this->getProductCollection()?>
+<?php $collectionSize = count($productCollection); ?>
+<?php $sliderType = $this->getSliderStyle() ?>
+<?php $isShowDescription = $this->showDescription(); ?>
+<?php if($collectionSize > 0):?>
+<div id="product-slider">
+	<div class="head">
+		<div class="box-collateral relatedproduct">
+			<h2><?php echo $this->__($this->getPageTitle())?></h2>
+		</div>
+	</div>
+	<?php if($sliderType == 'simple-slider'):?>
+		<div class="list-products">
+			<ul id="list-items">
+				<?php foreach ($productCollection->getItems() as $_product): ?>
+					<li>
+						<div class="product-image">
+							<a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(140,140); ?>" width="140" height="140" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+						</div>
+						<div class="product-info">
+							<h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><?php echo $this->htmlEscape($_product->getName()) ?></a></h3>
+							<?php if($isShowDescription == 1):?>
+								<div class="desc std">
+									<?php $_description = nl2br($_product->getShortDescription())?>
+									<?php $short_desc = substr($_description, 0, 200);  ?>
+									<?php if(substr($short_desc, 0, strrpos($short_desc, ' '))!='') 
+										$short_desc = substr($short_desc, 0, strrpos($short_desc, ' '));
+										$short_desc = $short_desc.'...';	
+									?>
+									<?php echo $short_desc;?>
+								</div>
+							<?php endif; ?>
+							<?php echo $this->getPriceHtml($_product, true) ?>
+							<div class="actions">
+								<?php if($_product->isSaleable()): ?>
+									<button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+								<?php else: ?>
+									<p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+								<?php endif; ?>
+							</div>		
+						</div>
+					</li>	
+				<?php endforeach?>
+			</ul>
+		</div>
+	<?php elseif ($sliderType == 'slider-scrollbar'):?>
+		<div id="sliderContent" class="ui-corner-all">	
+			<div class="viewer ui-corner-all">
+				<div class="content-conveyor ui-helper-clearfix">
+				<?php foreach ($productCollection->getItems() as $_product): ?>
+					<div class="item">
+						<h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><?php echo $this->htmlEscape($_product->getName()) ?></a></h3>
+						<div class="product-image">
+							<a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(140,140); ?>" width="140" height="140" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+						</div>
+						<?php echo $this->getPriceHtml($_product, true) ?>
+						<div class="actions">
+							<?php if($_product->isSaleable()): ?>
+								<button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+							<?php else: ?>
+								<p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+							<?php endif; ?>
+						</div>	
+					</div>	
+				<?php endforeach ?>
+				</div>
+			</div>
+			<div id="slider"></div>
+		</div>
+	<?php elseif ($sliderType == 'slider-lightbox'):?>
+		<div class="list-products">
+			<ul id="list-items">
+				<?php foreach ($productCollection->getItems() as $_product): ?>
+					<li>
+						<div class="product-image">
+							<a class="lightbox" href="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(500); ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(180,180); ?>" width="180" height="180" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+						</div>
+					</li>	
+				<?php endforeach?>
+			</ul>
+		</div>
+	<?php endif;?>
+</div>
+<?php else: ?>
+	<?php $in_productPage = $this->inCategoryPage();?>
+	<?php if(($slider_position = Mage::helper('productslider')->getProductTypeConfig() != 'related_product') || ($in_productPage == 'catalog_product_view') ):?>
+		<div class="box-collateral">
+			<h2><?php echo $this->__($this->getPageTitle())?></h2>
+		</div>
+		<div class="note-msg">
+			<?php echo $this->__('There are no products matching the selection.') ?>
+		</div>
+	<?php endif ?>
+<?php endif; ?>

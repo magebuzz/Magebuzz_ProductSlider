@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+  <default>
+		<reference name="head">
+			<block type="core/template" name="productslider.head" template="productslider/head.phtml"/>
+		</reference>
+		<reference name="content">
+			<block type="productslider/position" before="-" name="home.productslider"/>
+		</reference>	
+	</default>
+	<catalog_product_view>
+        <reference name="product.info">
+            <block type="productslider/productslider" name="recently.viewed" as="recentlyViewed" template="productslider/relatedproduct.phtml" after="product.description">
+                <action method="addToParentGroup"><group>detailed_info</group></action>
+                <action method="setTitle" translate="value">
+                <value helper="productslider/getConfigTextLabel"/>            
+                </action>                
+            </block>
+        </reference>
+    </catalog_product_view>
+</layout> 

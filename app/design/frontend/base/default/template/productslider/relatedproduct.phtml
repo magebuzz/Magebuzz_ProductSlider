@@ -1,0 +1,198 @@
+<?php $productCollection = $this->getProductCollection()?>
+<?php $collectionSize = count($productCollection); ?>
+<?php $sliderType = $this->getSliderStyle() ?>
+<?php $sliderWidth = $this->getWidthSlider() ?>
+<?php $sliderHeight = $this->getHeightSlider() ?>
+<?php $isShowDescription = $this->showDescription(); ?>
+<?php if($showProductPage = Mage::helper('productslider')->isShowProductSlider('product_page')):?>
+	<?php if(($collectionSize > 0) && $showProductPage):?>
+	<div id="product-slider">
+		<div class="head">
+			<div class="box-collateral relatedproduct">
+				<h2><?php echo $this->__($this->getPageTitle())?></h2>
+			</div>
+		</div>
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/magebuzz/productslider.css');?>" media="all" />
+		<?php if($sliderType == 'simple-slider'):?>
+			<script type="text/javascript" src="<?php echo $this->getJsUrl('magebuzz/jquery/jquery-latest.js') ?>"></script>
+			<script type="text/javascript" src="<?php echo $this->getJsUrl('magebuzz/jquery/jquery.bxSlider.js') ?>"></script>
+			<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/magebuzz/productslider/simple-slider.css');?>" media="all" />
+			<script type="text/javascript">
+			   var $simpleSlider = jQuery.noConflict();	
+				  $simpleSlider(document).ready(function(){
+					$simpleSlider('#list-items').bxSlider();
+				  });
+			</script>
+			<div class="list-products">
+				<ul id="list-items">
+					<?php foreach ($productCollection->getItems() as $_product): ?>
+						<li>
+							<div class="product-image">
+								<a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(161,123); ?>" width="161" height="123" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+							</div>
+							<div class="product-info">
+								<h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><?php echo $this->htmlEscape($_product->getName()) ?></a></h3>
+								<?php if($isShowDescription == 1):?>
+									<div class="desc std">
+										<?php $_description = nl2br($_product->getShortDescription())?>
+										<?php $short_desc = substr($_description, 0, 200);  ?>
+										<?php if(substr($short_desc, 0, strrpos($short_desc, ' '))!='') 
+											$short_desc = substr($short_desc, 0, strrpos($short_desc, ' '));
+											$short_desc = $short_desc.'...';	
+										?>
+										<?php echo $short_desc;?>
+									</div>
+								<?php endif; ?>
+								<?php echo $this->getPriceHtml($_product, true) ?>
+								<div class="actions">
+									<?php if($_product->isSaleable()): ?>
+										<button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+									<?php else: ?>
+										<p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+									<?php endif; ?>
+								</div>		
+							</div>
+						</li>	
+					<?php endforeach?>
+				</ul>
+			</div>
+		<?php elseif ($sliderType == 'slider-scrollbar'):?>
+			<script type="text/javascript" src="<?php echo $this->getJsUrl('magebuzz/jquery/jquery-latest.js') ?>"></script>
+			<script type="text/javascript" src="<?php echo $this->getJsUrl('magebuzz/jquery/jquery-ui-1.7.2.custom.min.js') ?>"></script>
+			<script type="text/javascript">
+				var $sl = jQuery.noConflict();	
+				  $sl(function() {
+					
+					//vars
+					var conveyor = $sl(".content-conveyor", $("#sliderContent")),
+					item = $sl(".item", $sl("#sliderContent"));
+					
+					//set length of conveyor
+					conveyor.css("width", item.length * parseInt(item.css("width")));
+							
+					//config
+					var sliderOpts = {
+					  max: (item.length * parseInt(item.css("width"))) - parseInt($sl(".viewer", $sl("#sliderContent")).css("width")),
+					  slide: function(e, ui) { 
+						conveyor.css("left", "-" + ui.value + "px");
+					  }
+					};
+
+					//create slider
+					$sl("#slider").slider(sliderOpts);
+				  });
+			</script>
+			<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/magebuzz/productslider/jquery-ui-1.7.2.custom.css');?>" />
+			<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/magebuzz/productslider/slidebar.css');?>" />
+			<div id="sliderContent" class="ui-corner-all">	
+				<div class="viewer ui-corner-all">
+					<div class="content-conveyor ui-helper-clearfix">
+					<?php foreach ($productCollection->getItems() as $_product): ?>
+						<div class="item">
+							<h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><?php echo $this->htmlEscape($_product->getName()) ?></a></h3>
+							<div class="product-image">
+								<a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(161,123); ?>" width="161" height="123" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+							</div>
+							<?php echo $this->getPriceHtml($_product, true) ?>
+							<div class="actions">
+								<?php if($_product->isSaleable()): ?>
+									<button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+								<?php else: ?>
+									<p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+								<?php endif; ?>
+							</div>	
+						</div>	
+					<?php endforeach ?>
+					</div>
+				</div>
+				<div id="slider"></div>
+			</div>
+		<?php elseif ($sliderType == 'slider-lightbox'):?>
+			<script type="text/javascript" src="<?php echo $this->getJsUrl('magebuzz/jquery/jquery-latest.js') ?>"></script>
+			<script type="text/javascript" src="<?php echo $this->getJsUrl('magebuzz/jquery/jquery.scrollShow.js') ?>"></script>
+			<script type="text/javascript" src="<?php echo $this->getJsUrl('magebuzz/jquery/jquery.scrollTo-min.js') ?>"></script>
+			<script type="text/javascript" src="<?php echo $this->getJsUrl('magebuzz/jquery/lightbox/jquery.lightbox-0.5.js') ?>"></script>
+			<script type="text/javascript">
+			//<![CDATA[
+			 var SKIN_URL = '<?php echo $this->getSkinUrl() ?>';
+			//]]>
+			</script>
+			<script type="text/javascript">
+				var $newslider = jQuery.noConflict(); 
+				$newslider(document).ready(function(){
+					$newslider.easing.backout = function(x, t, b, c, d){
+							var s=1.70158;
+							return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+						};
+						
+						$newslider('#sl-screen').scrollShow({
+							elements:'div.item',
+							itemSize:{
+								height:<?php echo $sliderHeight;?>,
+								width:<?php echo ceil($sliderWidth/3);?>
+							},
+							view:'#sl-view',
+							content:'#sl-images',
+							easing:'backout',
+							wrappers:'link,crop',
+							navigators:'a[id]',
+							navigationMode:'s',
+							circular:true,
+							start:0
+						});
+
+				});
+				$newslider(function() {
+					$newslider('#list-items a.img').lightBox();
+				});
+			</script>
+			<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/magebuzz/productslider/slider.css')?>"/>
+			<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('css/magebuzz/productslider/jquery.lightbox-0.5.css') ?>" media="screen" />
+			<div id="list-items">
+				<div id="slider-content" style="width:<?php echo $sliderWidth;?>px; height:<?php echo $sliderHeight;?>px;">
+					<ul id="sl-screen" style="width:<?php echo $sliderWidth;?>px; height:<?php echo $sliderHeight;?>px;">
+						<li class="nav-left"><a href="#" id="left">&nbsp;</a></li>
+						<li id="sl-view" style="width:<?php echo $sliderWidth;?>px; height:<?php echo $sliderHeight;?>px;">
+							<ul id="sl-images">
+								<?php foreach ($productCollection->getItems() as $_product): ?>
+									<li style="width:<?php echo ceil($sliderWidth/3);?>px; height:<?php echo $sliderHeight;?>px;">
+										<div class="item" style="width:<?php echo ceil($sliderWidth/3);?>px; height:<?php echo $sliderHeight;?>px;">
+											<div class="product-img" style="width:<?php echo ceil($sliderWidth/3);?>px;">
+												<div class="product-image">
+													<a class="img" href="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(500); ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(161,123); ?>" width="161" height="123" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+												</div>
+											</div>	
+											<div class="product-info">
+												<h3 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_product->getName()) ?>"><?php echo $this->htmlEscape($_product->getName()) ?></a></h3>
+												<?php echo $this->getPriceHtml($_product, true) ?>
+												<div class="actions">
+													<?php if($_product->isSaleable()): ?>
+														<button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>
+													<?php else: ?>
+														<p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+													<?php endif; ?>
+												</div>		
+											</div>
+										</div>	
+									</li>	
+								<?php endforeach ?>
+							</ul>
+						</li>
+						<li class="nav-right"><a href="#" id="right">&nbsp;</a></li>
+					</ul>
+				</div>
+			</div>	
+		<?php endif;?>
+	</div>
+	<?php else: ?>
+		<?php $in_productPage = $this->inCategoryPage();?>
+		<?php if(($slider_position = Mage::helper('productslider')->getProductTypeConfig() != 'related_product') || ($in_productPage == 'catalog_product_view') ):?>
+			<div class="box-collateral">
+				<h2><?php echo $this->__($this->getPageTitle())?></h2>
+			</div>
+			<div class="note-msg">
+				<?php echo $this->__('There are no products matching the selection.') ?>
+			</div>
+		<?php endif ?>
+	<?php endif; ?>
+<?php endif; ?>
